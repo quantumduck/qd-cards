@@ -16,17 +16,37 @@ function getMouseOffset(element, mouseEvent) {
     };
 }
 
-function makeDraggable(element, selectElementEvent, zIndex = 1) {
-    const mouseOffset = getMouseOffset(element, selectElementEvent);
+function createDocumentListenerManager(listenerType) {
+    let listeners = [];
+
+    function add(listener) {
+        document.addEventListener(listenerType, listener);
+        listeners.push(listener);
+    }
+    
+    function clear() {
+        listeners.forEach(l => {
+            document.removeEventListener(listenerType, l);
+        });
+        listeners = [];
+    }
+    
+    return { add, clear };
+}
+
+const mouseMoveListeners = createDocumentListenerManager("mousemove");
+
+function makeDraggable(element, cursorEvent, zIndex = 1) {
+    const mouseOffset = getMouseOffset(element, cursorEvent);
     const onMouseMove = e => syncElementToMouse(element, event, mouseOffset);
-    console.log("click");
+
+    element.ondragstart = () => false;
     element.style.position = 'absolute';
     element.style.zIndex = zIndex;
-    onMouseMove(selectElementEvent);
-    document.addEventListener('mousemove', onMouseMove);
-    element.ondragstart = () => false;
+    onMouseMove(cursorEvent);
+    mouseMoveListeners.add(onMouseMove);
     element.onmouseup = () => {
-        document.removeEventListener('mousemove', onMouseMove);
+        mouseMoveListeners.clear();
         element.onmouseup = null;
     }
     document.body.append(element);

@@ -1,3 +1,76 @@
 * {
-    font-family: "cursive"
+    font-family: cursive;
+    box-sizing: border-box;
+    font-size: 3vh;
+    text-align: center;
 }
+
+body {
+    height: 100vh;
+    margin: 0;
+}
+
+.main-content {
+    background-color: #4488FF;
+    margin: auto;
+    height: 80vh;
+    text-align: center;
+    padding-top: 2vh;
+}
+
+#ball {
+    position: absolute;
+}
+
+.image-container {
+    width: 60vh;
+    margin: auto;
+}
+
+.main-title {
+    font-size: 10vh;
+    color: #AA0000;
+    margin: 0;
+    height: 10vh;
+}
+
+.instructions {
+    margin-top: -12vh;
+    padding-top: 6vh;
+    background-color: white;
+    height: 25vh;
+}
+
+.instructions p {
+    text-align: center;
+    max-width: 60vh;
+    margin: auto;
+}
+
+.emoji-containers {
+    padding: 2vh;
+    max-width: 60vh;
+    margin: auto;
+}
+
+.emoji-containers div {
+    width: 8vh;
+    display: inline-block;
+}
+
+.open-box {
+    position: absolute;
+    top: 5vh;
+    left: 5vh;
+    width: 40vh;
+    height: 40vh;
+    background-color: #333333;
+    padding: 1vh;
+}
+
+.emoji-box {
+    display: inline-block;
+    width: 4vh;
+    padding: 0.5vh;
+}
+

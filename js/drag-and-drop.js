@@ -1,9 +1,6 @@
-function makeDraggableWithCopy(element, zIndex, dropZone) {
-    
-}
-
-
 function syncElementToMouse(element, mouseMoveEvent, offset = {x: 0, y: 0}) {
+    mouseMoveEvent.stopPropagation();
+    mouseMoveEvent.preventDefault();
     element.style.left = mouseMoveEvent.pageX - offset.x + 'px';
     element.style.top = mouseMoveEvent.pageY - offset.y + 'px';
 }
@@ -11,8 +8,8 @@ function syncElementToMouse(element, mouseMoveEvent, offset = {x: 0, y: 0}) {
 function getMouseOffset(element, mouseEvent) {
     const elementBox = element.getBoundingClientRect();
     return {
-        x: mouseEvent.clientX - elementBox.left,
-        y: mouseEvent.clientY - elementBox.top
+        x: mouseEvent.pageX - elementBox.left,
+        y: mouseEvent.pageY - elementBox.top
     };
 }
 
@@ -36,8 +33,8 @@ function createDocumentListenerManager(listenerType) {
 
 const mouseMoveListeners = createDocumentListenerManager("mousemove");
 
-function makeDraggable(element, cursorEvent, zIndex = 1) {
-    const mouseOffset = getMouseOffset(element, cursorEvent);
+function makeDraggable(element, cursorEvent, zIndex = 1, mouseOffset) {
+    mouseOffset = mouseOffset || getMouseOffset(element, cursorEvent);
     const onMouseMove = e => syncElementToMouse(element, event, mouseOffset);
 
     element.ondragstart = () => false;
@@ -50,6 +47,24 @@ function makeDraggable(element, cursorEvent, zIndex = 1) {
         element.onmouseup = null;
     }
     document.body.append(element);
+    console.log(element.getBoundingClientRect());
+}
+
+
+function makeDraggableWithCopy(element, cursorEvent, zIndex = 1) {
+    const initialPosition = element.getBoundingClientRect();
+    const copy = element.cloneNode(true);
+    copy.onmousedown = ev => makeDraggableWithCopy(copy, ev, zIndex);    
+    element.parentNode.replaceChild(copy, element);
+    
+    element.style.position = 'absolute';
+    element.style.zIndex = zIndex;
+    element.style.top = initialPosition.top + 'px';
+    element.style.left = initialPosition.left + 'px';
+    element.onmousedown = ev => makeDraggable(element, ev, zIndex);
+    document.body.append(element);
+    
+    makeDraggable(element, cursorEvent, zIndex);
 }
 
 

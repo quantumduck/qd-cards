@@ -1,17 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     
-    const emojis = createEmojis(0x1F600, 63);
-    const container = document.createElement('div');
-    container.className = "open-box";
+    const emoticons = createEmojis(0x1F600, 63);
+    const holiday = createEmojis(0x1F380, 20);
+    const food = createEmojis(0x1F32D, 63);
+    const animals = createEmojis(0x1F400, 63);
+    const weather1 = createEmojis(0x1F300, 34);
+    const weather2 = createEmojis(0x1F324, 9);
+    const containers = [
+        createSimpleContainer(emoticons),
+        createSimpleContainer([...holiday, ...weather1, ...weather2]),
+        createSimpleContainer(food),
+        createSimpleContainer(animals),
+    ];
     
-    for (let e of emojis) {
-        container.appendChild(e);
-        e.onmousedown = ev => makeDraggableWithCopy(e, ev, 1000);
-    }
-    document.body.append(container);
     twemoji.parse(document.body, {ext: ".svg", size: "svg"});
-    
+    document.body.onclick = ev => {
+        for (let c of containers) {
+            c.hide(ev);
+        }
+    };
+    const triggerHandler = (ev, triggerIndex) => {
+        for (let i = 0; i < containers.length; i++) {
+            i === triggerIndex
+                ? containers[i].toggle(ev)
+                : containers[i].hide(ev);
+        }
+    }
+    box1.onclick = ev => { triggerHandler(ev, 0); };
+    box2.onclick = ev => { triggerHandler(ev, 1); };
+    box3.onclick = ev => { triggerHandler(ev, 2); };
+    box4.onclick = ev => { triggerHandler(ev, 3); };
 
 /*   
     const e2 = document.createElement('div');

@@ -33,6 +33,8 @@ function createDocumentListenerManager(listenerType) {
 
 const mouseMoveListeners = createDocumentListenerManager("mousemove");
 
+
+// TODO make a change constructor to do less redundnat work
 function makeDraggable(element, cursorEvent, zIndex = 1, mouseOffset) {
     mouseOffset = mouseOffset || getMouseOffset(element, cursorEvent);
     const onMouseMove = e => syncElementToMouse(element, event, mouseOffset);
@@ -47,7 +49,6 @@ function makeDraggable(element, cursorEvent, zIndex = 1, mouseOffset) {
         element.onmouseup = null;
     }
     document.body.append(element);
-    console.log(element.getBoundingClientRect());
 }
 
 
@@ -61,6 +62,7 @@ function makeDraggableWithCopy(element, cursorEvent, zIndex = 1) {
     element.style.zIndex = zIndex;
     element.style.top = initialPosition.top + 'px';
     element.style.left = initialPosition.left + 'px';
+    element.style.margin = 0;
     element.onmousedown = ev => makeDraggable(element, ev, zIndex);
     document.body.append(element);
     

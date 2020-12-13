@@ -60,12 +60,13 @@ body {
 
 .open-box {
     position: absolute;
-    top: 5vh;
+    top: 15vh;
     left: 5vh;
     width: 40vh;
     height: 40vh;
-    background-color: #333333;
+    background-color: rgba(44,44,44,0.5);
     padding: 1vh;
+    border-radius: 1vh;
 }
 
 .emoji-box {

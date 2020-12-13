@@ -1,8 +1,15 @@
 function syncElementToMouse(element, mouseMoveEvent, offset = {x: 0, y: 0}) {
     mouseMoveEvent.stopPropagation();
     mouseMoveEvent.preventDefault();
-    element.style.left = mouseMoveEvent.pageX - offset.x + 'px';
-    element.style.top = mouseMoveEvent.pageY - offset.y + 'px';
+    element.style.left = mouseMoveEvent.clientX - offset.x + 'px';
+    element.style.top = mouseMoveEvent.clientY - offset.y + 'px';
+}
+
+function centreElementOnMouse(element, mouseMoveEvent, elementSize) {
+    mouseMoveEvent.stopPropagation();
+    mouseMoveEvent.preventDefault();
+    element.style.left = mouseMoveEvent.clientX - (elementSize.width / 2) + 'px';
+    element.style.top = mouseMoveEvent.clientY - (elementSize.height / 2) + 'px';
 }
 
 function getMouseOffset(element, mouseEvent) {
@@ -35,16 +42,17 @@ const mouseMoveListeners = createDocumentListenerManager("mousemove");
 
 
 // TODO make a change constructor to do less redundnat work
-function makeDraggable(element, cursorEvent, zIndex = 1, mouseOffset) {
-    mouseOffset = mouseOffset || getMouseOffset(element, cursorEvent);
-    const onMouseMove = e => syncElementToMouse(element, event, mouseOffset);
+function makeDraggable(element, cursorEvent, zIndex = 1, elementBox) {
+    cursorEvent.stopPropagation();
+    const onMouseMove = e => centreElementOnMouse(element, e, elementBox);
 
     element.ondragstart = () => false;
     element.style.position = 'absolute';
     element.style.zIndex = zIndex;
     onMouseMove(cursorEvent);
     mouseMoveListeners.add(onMouseMove);
-    element.onmouseup = () => {
+    element.onmouseup = ev => {
+        ev.stopPropagation();
         mouseMoveListeners.clear();
         element.onmouseup = null;
     }
@@ -63,10 +71,10 @@ function makeDraggableWithCopy(element, cursorEvent, zIndex = 1) {
     element.style.top = initialPosition.top + 'px';
     element.style.left = initialPosition.left + 'px';
     element.style.margin = 0;
-    element.onmousedown = ev => makeDraggable(element, ev, zIndex);
+    element.onmousedown = ev => makeDraggable(element, ev, zIndex, initialPosition);
     document.body.append(element);
     
-    makeDraggable(element, cursorEvent, zIndex);
+    makeDraggable(element, cursorEvent, zIndex, initialPosition);
 }
 
 
